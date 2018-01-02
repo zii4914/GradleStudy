@@ -1,25 +1,95 @@
+//指定该module构建的类型，有application及library两种
 apply plugin: 'com.android.application'
 
+//android{}指定构建配置
 android {
+    //签名配置
+    signingConfigs {
+        config {
+            keyAlias 'study-android'
+            keyPassword 'zii4914'
+            storeFile file('C:/ZII/Practice/GradleStudy/app/zii_study_key.jks')
+            storePassword 'zii4914'
+        }
+    }
+    //compileSdkVersion指定编译app时候使用的Android API level(即android版本)
     compileSdkVersion 26
+    //Build Tools 26.0.2 or higher. With this update, you no longer need to specify a version for
+    // the build tools—the pluginuses the minimum required version by default. So,
+    // you can now remove the android.buildToolsVersion property.【buildToolsVersion在Studio3.0中已经可以去除指定，Studio默认指定使用最低需求的版本】
+
+    //defaultConfig{}为所有的构建变体提供默认的配置，可以通过配置productFlavors来复写其中的配置
     defaultConfig {
+        //app的唯一标志，应用市场只根据该id是否相同判断同一个app，默认是初始包名结构【需要生成不同app，修改该处就可以，跟Manifest的package及包名无关】
         applicationId "com.zii.study.gradlestudy"
+        //定义app所支持的最低Android API版本(android系统版本)
         minSdkVersion 19
+        //表示app在该Android API版本(android系统版本)经过充分的测试，系统完全信任app，系统不再做兼容处理(如动态权限请求API-23)
         targetSdkVersion 26
+        //app实际版本号
         versionCode 1
+        //用于展示给用户看到的版本名称
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    //可以在这里配置多个构建类型。默认有release及debug，但是debug默认不显示
     buildTypes {
         release {
+            //是否进行混淆
             minifyEnabled false
+            //删除无效资源
+            shrinkResources false
+            //混淆文件的位置
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //指定签名
+            signingConfig signingConfigs.config
+        }
+        debug {
+            //是否进行混淆
+            minifyEnabled false
+            //删除无效资源
+            shrinkResources false
+            //混淆文件的位置
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //指定签名
+            signingConfig signingConfigs.config
+        }
+    }
+    //这里可选，默认不生成。在这里可以配置产品风味，为app创建不同的版本(允许指定applicationId等属性)，这里的配置覆盖defaultConfig。
+    flavorDimensions "default"
+    productFlavors {
+        home {
+            //普通版
+            applicationIdSuffix ".home"
+
+        }
+        pro {
+            //专业版
+            applicationIdSuffix ".pro"
+        }
+    }
+    //定制输出的apk的文件名
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def formattedDate = new Date().format('yyyyMMddHHmmss')
+
+                def fileName = "${variant.applicationId}" +
+                        "-${variant.getBuildType().getName()}" +
+                        "-${variant.flavorName}" +
+                        "-${variant.versionName}" +
+                        "-${variant.versionCode}" +
+                        "-${formattedDate}.apk"
+                outputFileName = fileName
+//                outputFileName = new File(outputFile.parent, fileName)
+            }
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'

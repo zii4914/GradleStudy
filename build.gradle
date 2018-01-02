@@ -1,20 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-buildscript {
-    
+//Gradle本身构建项目时候使用的
+buildscript {//build script 构建 脚本
+    //构建项目时候用到的远程库，例如gradle.xx版本，或gradle插件 远程库
     repositories {
         google()
         jcenter()
     }
+    //构建项目时用到的依赖
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
-
+//项目中所有module使用的远程库，有些第三方依赖在maven，则需要配置maven，或者指定url
 allprojects {
     repositories {
         google()

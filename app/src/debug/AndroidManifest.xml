@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.zii.study.gradlestudy">
+    <!--Debug源集的Manifest-->
+
+    <!--当App拥有多个AndroidManifest时，Gradle会将所有AndroidManifest合并为一个，优先级顺序是
+        【build variant manifest(ProVDebug(构建变体) > debug(构建类型) > pro(产品风味)) > main manifest > library manifest】-->
+
+    <!--Note:多个清单是合并(Merge)关系，并不是文件替换覆盖或标签(eg.<application/>)替换，而是具体每个属性
+        或者指每行。
+        例:当debug源集中manifest的application标签也声明android:label时候，会跟main的manifest的该属性冲突
+        ，编译错误，使用Merged Manifest视图预览，可以得到冲突提示。
+        使用tools:replace指定替换属性名称，可以使得debug源集的manifest的该属性，覆盖main的manifest对应属性-->
+
+    <!--具体合并规则，地址：https://developer.android.com/studio/build/manifest-merge.html -->
+
+    <application
+        android:label="G-Debug"
+        tools:replace="android:label" />
+
+</manifest>

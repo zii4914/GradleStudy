@@ -32,3 +32,6 @@ captures/
 #NDK
 obj/
 .externalNativeBuild
+app/DebugV/release/output.json
+app/HomeV/release/output.json
+app/ProV/release/output.json

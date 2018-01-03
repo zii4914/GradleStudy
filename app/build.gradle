@@ -55,20 +55,46 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+    //flavorDimensions该属性可以定义构建产品风味组
+    //默认情况下在产品风味中不定义dimension，并且flavorDimensions随便设置，则默认构建flavor + buildType 变体(共4*2)
+    //若如下配置version及api，则以version flavor + api flavor +build type 的方式进行组合(共2*2*2)
+    flavorDimensions 'version', 'api'
     //这里可选，默认不生成。在这里可以配置产品风味，为app创建不同的版本(允许指定applicationId等属性)，这里的配置覆盖defaultConfig。
-    flavorDimensions "default"
     productFlavors {
         home {
+            dimension 'version'
             //普通版
-            applicationIdSuffix ".home"
+            applicationIdSuffix '.home'
 
         }
         pro {
+            dimension 'version'
             //专业版
-            applicationIdSuffix ".pro"
+            applicationIdSuffix '.pro'
+        }
+
+        minApi19 {
+            dimension 'api'
+            minSdkVersion 19
+            versionNameSuffix '-minApi19'
+        }
+        minApi21 {
+            dimension 'api'
+            minSdkVersion 21
+            versionNameSuffix '-minApi21'
         }
     }
-    //定制输出的apk的文件名
+    //过滤构建变体(eg.pro版仅支持api21+)
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        //忽略pro的minApi21版本
+        if (names.contains("minApi19") && names.contains("pro")) {
+            setIgnore(true)
+        }
+    }
+
+    //定制输出的apk的文件名(即指定所有变体输出的文件名称)
     android.applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def outputFile = output.outputFile
@@ -86,10 +112,37 @@ android {
             }
         }
     }
+
+    //指定默认源集配置 -- https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.api.AndroidSourceSet.html
+    sourceSets {
+        //main源集
+        main {
+            //aidl  assets java manifest 等；路径是相对于模块级别build.gradle的文件路径
+            res.srcDirs = ['src/main/res']  //资源目录
+            jniLibs.srcDirs = ['src/main/jniLibs']  //jni库目录
+            jni.srcDirs = []    //jni源码目录
+
+        }
+        androidTest {
+            //指定源集根目录
+            setRoot("src/androidTest")
+        }
+        pro {
+            //pro源集的res资源指向proDebug源集的res
+            //Note:这样指定，那么ImageView的图片就指向proDebug的res资源图片，letter显示是藏青色P字母，而不是pro下的的青蓝色P
+            res.srcDir("res")
+            setRoot("src/proDebug")
+        }
+    }
 }
 
 dependencies {
+    //Note:Studio 3.0后，取消compile关键字，取而代之是api，implementation
+    //implementation，eg. library中implementation 了gson库，但是app引入了library，但是无法使用gson，若需要使用需要换回api(api==compile)，好处是加快编译速度
+
+    //本地二进制依赖项，即Jar包
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //远程二进制依赖项，即远程第三方库
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'

@@ -1,0 +1,16 @@
+//note：记得在project级的build.gradle中引入
+
+ext.versions = [
+    minSdkVersion   : 19,
+    targetSdkVersion: 26,
+    versionCode     : 1,
+    versionName     : '1.0.0',
+
+    supportLib      : '26.1.0',
+    butterknife     : "8.8.1"
+]
+
+ext.libraries = [
+    butterknife        : "com.jakewharton:butterknife:$versions.butterknife",
+    butterknifeCompiler: "com.jakewharton:butterknife-compiler:$versions.butterknife"
+]

@@ -23,14 +23,18 @@ android {
         //app的唯一标志，应用市场只根据该id是否相同判断同一个app，默认是初始包名结构【需要生成不同app，修改该处就可以，跟Manifest的package及包名无关】
         applicationId "com.zii.study.gradlestudy"
         //定义app所支持的最低Android API版本(android系统版本)
-        minSdkVersion 19
+        minSdkVersion versions.minSdkVersion
         //表示app在该Android API版本(android系统版本)经过充分的测试，系统完全信任app，系统不再做兼容处理(如动态权限请求API-23)
-        targetSdkVersion 26
+        targetSdkVersion versions.targetSdkVersion
         //app实际版本号
-        versionCode 1
+        versionCode versions.versionCode
         //用于展示给用户看到的版本名称
-        versionName "1.0"
+        versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        //Build Config 中生成 minSdk、targetSdk
+        buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
+        buildConfigField "int", "TARGET_SDK_VERSION", "$targetSdkVersion.apiLevel"
     }
     //可以在这里配置多个构建类型。默认有release及debug，但是debug默认不显示
     buildTypes {
@@ -148,4 +152,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //依赖管理
+    implementation libraries.butterknife
+    annotationProcessor libraries.butterknifeCompiler
 }

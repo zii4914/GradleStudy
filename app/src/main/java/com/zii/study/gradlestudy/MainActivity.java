@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         + "\n\nflavor:    " + BuildConfig.FLAVOR
         + "\n\nversionName:    " + BuildConfig.VERSION_NAME
         + "\n\nversionCode:    " + BuildConfig.VERSION_CODE
+        + "\n\nminSdk:    " + BuildConfig.MIN_SDK_VERSION
+        + "\n\ntargetSdk:    " + BuildConfig.TARGET_SDK_VERSION
         + "\n\nDebug:    " + BuildConfig.DEBUG
     );
 

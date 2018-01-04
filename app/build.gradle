@@ -40,9 +40,9 @@ android {
     buildTypes {
         release {
             //是否进行混淆
-            minifyEnabled false
+            minifyEnabled true
             //删除无效资源
-            shrinkResources false
+            shrinkResources true
             //混淆文件的位置
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //指定签名
